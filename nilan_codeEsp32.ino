@@ -1,5 +1,7 @@
 #include <ArduinoJson.h>
 #include <WiFi.h>
+#include <ESPmDNS.h>
+#include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 #include <ModbusMaster.h>
 #include <PubSubClient.h>
@@ -203,7 +205,9 @@ JsonObject HandleRequest(JsonDocument& doc)
  
 void setup()
 {
+  Serial.begin(115200);
   pinMode(13, OUTPUT);
+  if(USE_LED_BUILTIN) pinMode(LED_BUILTIN, OUTPUT);
   char host[64];
   uint8_t chipid[6];
   esp_efuse_read_mac(chipid);
@@ -214,21 +218,60 @@ void setup()
   ArduinoOTA.setHostname(host);
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
-  while (WiFi.waitForConnectResult() != WL_CONNECTED)
+  while (WiFi.waitForConnectResult() != WL_CONNECTED){
+  Serial.println("Connection Failed! Rebooting...");
+  if(LED_BUILTIN) digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+  delay(5000);
+  ESP.restart();
+      }
+  if (WiFi.status() == WL_CONNECTED && USE_LED_BUILTIN)
   {
-    delay(5000);
-    ESP.restart();
+  digitalWrite(LED_BUILTIN, 1);
   }
-  ArduinoOTA.onStart([]() {
-  });
-  ArduinoOTA.onEnd([]() {
-  });
-  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-  });
-  ArduinoOTA.onError([](ota_error_t error) {
-  });
-  ArduinoOTA.begin();
+ // Port defaults to 3232
+  // ArduinoOTA.setPort(3232);
+
+  // Hostname defaults to esp3232-[MAC]
+  // ArduinoOTA.setHostname("myesp32");
+
+  // No authentication by default
+  // ArduinoOTA.setPassword("admin");
+
+  // Password can be set with it's md5 value as well
+  // MD5(admin) = 21232f297a57a5a743894a0e4a801fc3
+  // ArduinoOTA.setPasswordHash("21232f297a57a5a743894a0e4a801fc3");
+
+  ArduinoOTA
+    .onStart([]() {
+      String type;
+      if (ArduinoOTA.getCommand() == U_FLASH)
+        type = "sketch";
+      else // U_SPIFFS
+        type = "filesystem";
+
+      // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
+      Serial.println("Start updating " + type);
+    })
+    .onEnd([]() {
+      Serial.println("\nEnd");
+    })
+    .onProgress([](unsigned int progress, unsigned int total) {
+      Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+    })
+    .onError([](ota_error_t error) {
+      Serial.printf("Error[%u]: ", error);
+      if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
+      else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
+      else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
+      else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
+      else if (error == OTA_END_ERROR) Serial.println("End Failed");
+    });
   server.begin();
+  ArduinoOTA.begin();
+  Serial.println("Ready");
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+  
  
   #if SERIAL == SERIAL_SOFTWARE
     #warning Compiling for software serial
@@ -590,4 +633,5 @@ void loop()
       lastMsg = now;
     }
   }
-}
+
+ }  
