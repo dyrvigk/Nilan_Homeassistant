@@ -11,6 +11,7 @@
 #include <ArduinoOTA.h>
 #include <ModbusMaster.h>
 #include <WiFi.h>
+#include <Ticker.h>
 #define HOST "NilanGW-%s" // Change this to whatever you like.
 #define MAXREGSIZE 28
 #define SENDINTERVAL 5000 // normally set to 180000 milliseconds = 3 minutes. Define as you like
@@ -26,6 +27,7 @@
 #define TEMPSET_T11 1700
 #define TEMPSET_T12 1701
 char chipid[12];
+Ticker ticker;
 WiFiServer server(80);
 WiFiClient client;
 PubSubClient mqttclient(client);
@@ -207,11 +209,16 @@ char static_sn[16] = "255.255.255.0";
 
 //flag for saving data
 bool shouldSaveConfig = false;
-
+void tick()
+{
+  //toggle state
+  digitalWrite(26, !digitalRead(26));     // set pin to the opposite state
+}
 //callback notifying us of the need to save config
 void saveConfigCallback () {
   Serial.println("Should save config");
   shouldSaveConfig = true;
+  ticker.attach(0.6, tick);
 }
 
 void setupSpiffs()
@@ -280,7 +287,7 @@ void setup()
 
   // WiFiManager, Local intialization. Once its business is done, there is no need to keep it around
   WiFiManager wm;
-
+  ticker.attach(0.2, tick);
   //set config save notify callback
   wm.setSaveConfigCallback(saveConfigCallback);
 
@@ -313,24 +320,22 @@ void setup()
   //If connection fails it starts an access point with the specified name
   //here  "AutoConnectAP" if empty will auto generate basedcon chipid, if password is blank it will be anonymous
   //and goes into a blocking loop awaiting configuration
-  if (!wm.autoConnect("nilanAP", "1029384756")) {
+  if (!wm.autoConnect("nilanAP")) {
     Serial.println("failed to connect and hit timeout");
     delay(3000);
     // if we still have not connected restart and try all over again
     ESP.restart();
     delay(5000);
-  }
-    if (WiFi.status() == WL_CONNECTED)
-  {
-    digitalWrite(26, 1);
+ 
   }
   // always start configportal for a little while
   wm.setConfigPortalTimeout(60);
-  wm.startConfigPortal("nilanAP","1029384756");
+  wm.startConfigPortal("nilanAP");
 
   //if you get here you have connected to the WiFi
   Serial.println("connected...yeey :)");
-
+  ticker.detach(); 
+  digitalWrite(26, 1);
   //read updated parameters
   strcpy(mqtt_server, custom_mqtt_server.getValue());
   strcpy(mqtt_port, custom_mqtt_port.getValue());
