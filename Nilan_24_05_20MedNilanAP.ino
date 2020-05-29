@@ -12,6 +12,7 @@
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 #include <ModbusMaster.h>
+#include <Ticker.h>
 
 #define HOST "NilanGW-%s" // Change this to whatever you like.
 #define MAXREGSIZE 28
@@ -28,6 +29,7 @@
 #define TEMPSET_T11 1700
 #define TEMPSET_T12 1701
 char chipid[12];
+Ticker ticker;
 WiFiServer server(80);
 WiFiClient client;
 PubSubClient mqttclient(client);
@@ -197,6 +199,8 @@ JsonObject HandleRequest(JsonDocument& doc)
 }
 
 //define your default values here, if there are different values in config.json, they are overwritten.
+
+
 char mqtt_server[40];
 char mqtt_port[6]  = "1883";
 char mqtt_user[40];
@@ -209,11 +213,16 @@ char static_sn[16] = "255.255.255.0";
 
 //flag for saving data
 bool shouldSaveConfig = false;
-
+void tick()
+{
+  //toggle state
+  digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));     // set pin to the opposite state
+}
 //callback notifying us of the need to save config
 void saveConfigCallback () {
   Serial.println("Should save config");
   shouldSaveConfig = true;
+  ticker.attach(0.6, tick);
 }
 
 void setupSpiffs()
@@ -245,7 +254,7 @@ void setupSpiffs()
         if (!deserializeError)
         {
           Serial.println("\nparsed json");
-
+          
           strcpy(mqtt_server, json["mqtt_server"]);
           strcpy(mqtt_port, json["mqtt_port"]);
           strcpy(mqtt_user, json["mqtt_user"]);
@@ -275,7 +284,7 @@ void setup()
 
   // WiFiManager, Local intialization. Once its business is done, there is no need to keep it around
   WiFiManager wm;
-
+  ticker.attach(0.2, tick);
   //set config save notify callback
   wm.setSaveConfigCallback(saveConfigCallback);
 
@@ -284,12 +293,14 @@ void setup()
   // The extra parameters to be configured (can be either global or just in the setup)
   // After connecting, parameter.getValue() will get you the configured value
   // id/name placeholder/prompt default length
+ 
   WiFiManagerParameter custom_mqtt_server("server", "mqtt server", mqtt_server, 40);
   WiFiManagerParameter custom_mqtt_port("port", "mqtt port", mqtt_port, 6);
   WiFiManagerParameter custom_mqtt_user("user", "mqtt_user", mqtt_user, 40);
   WiFiManagerParameter custom_mqtt_pass("pass", "mqtt_pass", mqtt_pass, 40);
 
   //add all your parameters here
+ 
   wm.addParameter(&custom_mqtt_server);
   wm.addParameter(&custom_mqtt_port);
   wm.addParameter(&custom_mqtt_user);
@@ -308,25 +319,24 @@ void setup()
   //If connection fails it starts an access point with the specified name
   //here  "AutoConnectAP" if empty will auto generate basedcon chipid, if password is blank it will be anonymous
   //and goes into a blocking loop awaiting configuration
-  if (!wm.autoConnect("nilanAP", "1029384756")) {
+  if (!wm.autoConnect("nilanAP")) {
     //Serial.println("failed to connect and hit timeout");
     delay(3000);
     // if we still have not connected restart and try all over again
     ESP.restart();
     delay(5000);
   }
-    if (WiFi.status() == WL_CONNECTED)
-  {
-    digitalWrite(LED_BUILTIN, 0);
-  }
+  
   // always start configportal for a little while
   wm.setConfigPortalTimeout(60);
-  wm.startConfigPortal("nilanAP","1029384756");
+  wm.startConfigPortal("nilanAP");
 
   //if you get here you have connected to the WiFi
   //Serial.println("connected...yeey :)");
-
+   ticker.detach(); 
+   digitalWrite(LED_BUILTIN, 0);
   //read updated parameters
+  
   strcpy(mqtt_server, custom_mqtt_server.getValue());
   strcpy(mqtt_port, custom_mqtt_port.getValue());
   strcpy(mqtt_user, custom_mqtt_user.getValue());
@@ -336,6 +346,7 @@ void setup()
     Serial.println("saving config");
     DynamicJsonDocument json(1024);
     //JsonObject json = jsonDocument.createObject();
+   
     json["mqtt_server"] = mqtt_server;
     json["mqtt_port"]   = mqtt_port;
     json["mqtt_user"]   = mqtt_user;
