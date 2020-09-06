@@ -1,4 +1,6 @@
-# Thermostat - Esphome Home Assistant - Nextion-3.2 inches 
+# Thermostat - Esphome Home Assistant - Nextion-3.2 inches Modifyed to 2.4 inch and from italian to english  tft file is for 2.4 inch 
+
+
 
 This version allows you to manage the thermostat via Home Assistant and in the absence of the server simply ON / OFF in manual mode touch nextion.
 To carry out the project with logic even in the absence of Home Assistant and therefore in offline mode, I refer you to the specific version, always in my repository. Link project later
