@@ -1,0 +1,406 @@
+- alias: Set Time Mode Selector
+  trigger:
+    platform: mqtt
+    topic: "ventilation/user/UserTimeSet"
+   # entity_id: input_select.nilan_user_time_mode
+  action:
+     service: input_select.select_option
+     data_template:
+      entity_id: input_select.nilan_user_time_mode
+      option: "{{ trigger.payload }}"
+
+- alias: Set time Mode
+  trigger:
+    platform: state
+    entity_id: input_select.nilan_user_time_mode
+  action:
+    service: mqtt.publish
+    data_template:
+      topic: "ventilation/usertimeset"
+      retain: true
+      payload: "{{ states('input_select.nilan_user_time_mode') }}"
+
+
+- alias: Set Cool Mode Selector
+  trigger:
+    platform: mqtt
+    topic: "ventilation/coolset"
+   # entity_id: input_select.nilan_cool_mode
+  action:
+     service: input_select.select_option
+     data_template:
+      entity_id: input_select.nilan_cool_mode
+      option: "{{ trigger.payload }}"
+
+- alias: Set Cool Mode
+  trigger:
+    platform: state
+    entity_id: input_select.nilan_cool_mode
+  action:
+    service: mqtt.publish
+    data_template:
+      topic: "ventilation/coolset"
+      retain: true
+      payload: "{{ states('input_select.nilan_cool_mode') }}"
+
+
+- alias: 'Convert week program'
+  initial_state: 'on'
+  trigger:
+    platform: mqtt
+    topic: convert/selectset
+  action:
+    service: mqtt.publish
+    data_template:
+      topic: "ventilation/selectset"
+      payload: >-
+        {% set mode_name = trigger.payload %}
+        {% set modes = { 'none':'0', 'program_1':'1', 'program_2':'2', 'program_3':'3' } %}
+        {{ modes[mode_name] if mode_name in modes.keys() else '0' }}
+
+
+- alias: 'Convert HVAC Mode'
+  initial_state: 'on'
+  trigger:
+    platform: mqtt
+    topic: convert/modeset
+  action:
+    service: mqtt.publish
+    data_template:
+      topic: "ventilation/modeset"
+      payload: >-
+        {% set mode_name = trigger.payload %}
+        {% set modes = { 'off':'0', 'heat':'1', 'cool':'2', 'auto':'3' } %}
+        {{ modes[mode_name] if mode_name in modes.keys() else '0' }}
+
+- alias: 'Convert HVAC Temperature'
+  initial_state: 'on'
+  trigger:
+    platform: mqtt
+    topic: convert/tempset
+  action:
+    service: mqtt.publish
+    data_template:
+      topic: "ventilation/tempset"
+      payload: "{{ trigger.payload | float | multiply(100) | round }}" 
+
+- alias: Nilan Controller Offline
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.nilan_controller
+    to: 'off'
+  action:
+    - service: notify.pushbullet
+      data:
+        message: ""
+        title: 'Nilan Offline Kl: {{ now().strftime("%H:%M") }}'
+
+- alias: Nilan Controller Online
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.nilan_controller
+    to: 'on'
+  action:
+    - service: notify.pushbullet
+      data:
+        message: ""
+        title: 'Nilan Online Kl: {{ now().strftime("%H:%M") }}' 
+
+- alias: Nilan Bypass Closed
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.nilan_bypass
+    to: 'off'
+  action:
+    - service: notify.pushbullet
+      data:
+        message: ""
+        title: 'Nilan Bypass-Spjæld Lukket Kl: {{ now().strftime("%H:%M") }}'
+
+- alias: Nilan Bypass Open
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.nilan_bypass
+    to: 'on'
+  action:
+    - service: notify.pushbullet
+      data:
+        message: ""
+        title: 'Nilan Bypass-Spjæld Åben Kl: {{ now().strftime("%H:%M") }}' 
+
+- alias: Set Nilan User Func Mode 
+  trigger:
+    platform: mqtt
+    topic: "NilanUserFunc"
+  action:
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.nilan_user_func_mode
+        option: "{{ trigger.payload }}"
+ 
+- alias: Set Nilan User Func Mode
+  trigger:
+    platform: state
+    entity_id: input_select.nilan_user_func_mode
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: "NilanUserFunc"
+        retain: true
+        payload: "{{ states('input_select.nilan_user_func_mode') }}"
+ 
+# Styr Nilan user func mode via mqtt.
+ 
+- alias: Set Nilan User Func Mode "none" via mqtt
+  trigger:
+    platform: mqtt
+    topic: ventilation/userfuncset
+    payload: "0"
+  action:
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.nilan_user_func_mode
+        option: "none"
+ 
+- alias: Set Nilan User Func Mode "extend" via mqtt
+  trigger:
+    platform: mqtt
+    topic: ventilation/userfuncset
+    payload: "1"
+  action:
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.nilan_user_func_mode
+        option: extend
+ 
+- alias: Set Nilan User Func Mode "inlet" via mqtt
+  trigger:
+    platform: mqtt
+    topic: ventilation/userfuncset
+    payload: "2"
+  action:
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.nilan_user_func_mode
+        option: inlet
+ 
+- alias: Set Nilan User Func Mode "exhaust" via mqtt
+  trigger:
+    platform: mqtt
+    topic: ventilation/userfuncset
+    payload: "3"
+  action:
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.nilan_user_func_mode
+        option: exhaust
+
+- alias: Set Nilan User Func Mode "external_heater_offset" via mqtt
+  trigger:
+    platform: mqtt
+    topic: ventilation/userfuncset
+    payload: "4"
+  action:
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.nilan_user_func_mode
+        option: external_heater_offset
+
+- alias: Set Nilan User Func Mode "ventilate" via mqtt
+  trigger:
+    platform: mqtt
+    topic: ventilation/userfuncset
+    payload: "5"
+  action:
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.nilan_user_func_mode
+        option: ventilate
+
+ 
+# Styr Nilan  user func mode via input select i Home Assistant.
+ 
+- alias: Set Nilan User Func Mode "none" via HA
+  trigger:
+    platform: state
+    entity_id: input_select.nilan_user_func_mode
+    to: "none"
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: ventilation/userfuncset
+        payload: "0"
+ 
+- alias: Set Nilan User Func Mode "1" via HA
+  trigger:
+    platform: state
+    entity_id: input_select.nilan_user_func_mode
+    to: "extend"
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: ventilation/userfuncset
+        payload: "1"      
+ 
+- alias: Set Nilan User Func Mode "2" via HA
+  trigger:
+    platform: state
+    entity_id: input_select.nilan_user_func_mode
+    to: "inlet"
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: ventilation/userfuncset
+        payload: "2"                                                                      
+ 
+- alias: Set Nilan User Func Mode "3" via HA
+  trigger:
+    platform: state
+    entity_id: input_select.nilan_user_func_mode
+    to: "exhaust"
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: ventilation/userfuncset
+        payload: "3"
+
+- alias: Set Nilan User Func Mode "3" via HA
+  trigger:
+    platform: state
+    entity_id: input_select.nilan_user_func_mode
+    to: "external_heater_offset"
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: ventilation/userfuncset
+        payload: "4"
+
+- alias: Set Nilan User Func Mode "3" via HA
+  trigger:
+    platform: state
+    entity_id: input_select.nilan_user_func_mode
+    to: "ventilate"
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: ventilation/userfuncset
+        payload: "5"
+
+  
+- alias: Set Nilan Week Program Mode Selector
+  trigger:
+    platform: mqtt
+    topic: "WeekProgramMode"
+  action:
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.weekprogram_mode
+        option: "{{ trigger.payload }}"
+ 
+- alias: Set Nilan Week Program Mode
+  trigger:
+    platform: state
+    entity_id: input_select.weekprogram_mode
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: "WeekProgramMode"
+        retain: true
+        payload: "{{ states('input_select.weekprogram_mode') }}"
+ 
+# Styr Nilan Uge Program (Off, Program 1, 2 og 3) via mqtt.
+ 
+- alias: Set Nilan Week Program "Off" via mqtt
+  trigger:
+    platform: mqtt
+    topic: ventilation/selectset
+    payload: "0"
+  action:
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.weekprogram_mode
+        option: "Off"
+ 
+- alias: Set Nilan Week Program "Program 1" via mqtt
+  trigger:
+    platform: mqtt
+    topic: ventilation/seletctset
+    payload: "1"
+  action:
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.weekprogram_mode
+        option: Program 1
+ 
+- alias: Set Nilan Week Program "Program 2" via mqtt
+  trigger:
+    platform: mqtt
+    topic: ventilation/selectset
+    payload: "2"
+  action:
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.weekprogram_mode
+        option: Program 2
+ 
+- alias: Set Nilan Week Program "Program 3" via mqtt
+  trigger:
+    platform: mqtt
+    topic: ventilation/selectset
+    payload: "3"
+  action:
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.weekprogram_mode
+        option: Program 3
+ 
+# Styr Nilan Uge Program (Off, Program 1, 2 og 3) via input select i Home Assistant.
+ 
+- alias: Set Nilan Week Program "Off" via HA
+  trigger:
+    platform: state
+    entity_id: input_select.weekprogram_mode
+    to: "Off"
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: ventilation/selectset
+        payload: "0"
+ 
+- alias: Set Nilan Week Program "1" via HA
+  trigger:
+    platform: state
+    entity_id: input_select.weekprogram_mode
+    to: "Program 1"
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: ventilation/selectset
+        payload: "1"      
+ 
+- alias: Set Nilan Week Program "2" via HA
+  trigger:
+    platform: state
+    entity_id: input_select.weekprogram_mode
+    to: "Program 2"
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: ventilation/selectset
+        payload: "2"                                                                      
+ 
+- alias: Set Nilan Week Program "3" via HA
+  trigger:
+    platform: state
+    entity_id: input_select.weekprogram_mode
+    to: "Program 3"
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: ventilation/selectset
+        payload: "3"
+

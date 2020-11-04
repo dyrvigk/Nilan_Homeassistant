@@ -1,0 +1,518 @@
+custom_header:
+  kiosk_mode: true
+title: Hjem
+views:
+  - badges: []
+    cards:
+      - entity: weather.hjem
+        type: weather-forecast
+      - entities:
+          - sensor.hacs
+        type: entities
+      - entity: media_player.alrum
+        type: media-control
+      - entities:
+          - switch.mcp23017_pin_0_2
+          - switch.mcp23017_pin_1_2
+          - switch.mcp23017_pin_10_2
+          - switch.mcp23017_pin_11_2
+          - switch.mcp23017_pin_12_2
+          - switch.mcp23017_pin_13_2
+          - switch.mcp23017_pin_14_2
+          - switch.mcp23017_pin_15_2
+          - switch.mcp23017_pin_2_2
+          - switch.mcp23017_pin_3_2
+          - switch.mcp23017_pin_4_2
+          - switch.mcp23017_pin_5_2
+          - switch.mcp23017_pin_6_2
+          - switch.mcp23017_pin_7_2
+          - switch.mcp23017_pin_8_2
+          - switch.mcp23017_pin_9_2
+        type: entities
+      - entities:
+          - lock.0x60a423fffeb27c61_child_lock
+          - sensor.0x60a423fffeb27c61_linkquality
+        type: entities
+      - entity: climate.0x60a423fffeb27c61_climate
+        type: thermostat
+    icon: 'mdi:home'
+    panel: false
+    path: default_view
+    theme: ios-dark-mode-light-blue-alternative
+    title: Home
+  - badges: []
+    cards:
+      - entity: climate.floorc82b96baae94_0_climate
+        name: Stue
+        sensors:
+          - entity: sensor.floorc82b96baae94_0_battery
+            name: Battery
+        style: |
+          ha-card {
+            --st-font-size-xl: 18px;
+            --st-font-size-m: 18px;
+            --st-font-size-title: 18px;
+            --st-font-size-sensors: 18px;
+            --st-spacing: 2px;
+          }
+          ...
+        type: 'custom:simple-thermostat'
+      - entity: climate.floorc82b96baae94_2_climate
+        name: Bad
+        sensors:
+          - entity: sensor.floorc82b96baae94_2_battery
+            name: Battery
+        style: |
+          ha-card {
+            --st-font-size-xl: 18px;
+            --st-font-size-m: 18px;
+            --st-font-size-title: 18px;
+            --st-font-size-sensors: 18px;
+            --st-spacing: 2px;
+          }
+          ...
+        type: 'custom:simple-thermostat'
+      - entity: climate.floorc82b96baae94_3_climate
+        name: Soveværelse
+        sensors:
+          - entity: sensor.floorc82b96baae94_3_battery
+            name: Battery
+        style: |
+          ha-card {
+            --st-font-size-xl: 18px;
+            --st-font-size-m: 18px;
+            --st-font-size-title: 18px;
+            --st-font-size-sensors: 18px;
+            --st-spacing: 2px;
+          }
+          ...
+        type: 'custom:simple-thermostat'
+      - entity: climate.floorc82b96baae94_4_climate
+        name: Kontor
+        sensors:
+          - entity: sensor.floorc82b96baae94_4_battery
+            name: Battery
+        style: |
+          ha-card {
+            --st-font-size-xl: 18px;
+            --st-font-size-m: 18px;
+            --st-font-size-title: 18px;
+            --st-font-size-sensors: 18px;
+            --st-spacing: 2px;
+          }
+          ...
+        type: 'custom:simple-thermostat'
+      - entity: climate.floorc82b96baae94_5_climate
+        name: Entre
+        sensors:
+          - entity: sensor.floorc82b96baae94_5_battery
+            name: Battery
+        style: |
+          ha-card {
+            --st-font-size-xl: 18px;
+            --st-font-size-m: 18px;
+            --st-font-size-title: 18px;
+            --st-font-size-sensors: 18px;
+            --st-spacing: 2px;
+          }
+          ...
+        type: 'custom:simple-thermostat'
+      - entity: climate.floorc82b96baae94_6_climate
+        name: Køkken
+        sensors:
+          - entity: sensor.floorc82b96baae94_6_battery
+            name: Battery
+        style: |
+          ha-card {
+            --st-font-size-xl: 18px;
+            --st-font-size-m: 18px;
+            --st-font-size-title: 18px;
+            --st-font-size-sensors: 18px;
+            --st-spacing: 2px;
+          }
+          ...
+        type: 'custom:simple-thermostat'
+      - entity: climate.floorc82b96baae94_8_climate
+        name: Playroom
+        sensors:
+          - entity: sensor.floorc82b96baae94_8_battery
+            name: Battery
+        style: |
+          ha-card {
+            --st-font-size-xl: 18px;
+            --st-font-size-m: 18px;
+            --st-font-size-title: 18px;
+            --st-font-size-sensors: 18px;
+            --st-spacing: 2px;
+          }
+          ...
+        type: 'custom:simple-thermostat'
+      - entity: climate.floorc82b96baae94_9_climate
+        name: Melissa Værelse
+        sensors:
+          - entity: sensor.floorc82b96baae94_9_battery
+            name: Battery
+        style: |
+          ha-card {
+            --st-font-size-xl: 18px;
+            --st-font-size-m: 18px;
+            --st-font-size-title: 18px;
+            --st-font-size-sensors: 18px;
+            --st-spacing: 2px;
+          }
+          ...
+        type: 'custom:simple-thermostat'
+      - entity: climate.floorc82b96baae94_10_climate
+        name: Bad Børn
+        sensors:
+          - entity: sensor.floorc82b96baae94_10_battery
+            name: Battery
+        style: |
+          ha-card {
+            --st-font-size-xl: 18px;
+            --st-font-size-m: 18px;
+            --st-font-size-title: 18px;
+            --st-font-size-sensors: 18px;
+            --st-spacing: 2px;
+          }
+          ...
+        type: 'custom:simple-thermostat'
+      - entity: climate.floorc82b96baae94_11_climate
+        name: Gæste Værelse
+        sensors:
+          - entity: sensor.floorc82b96baae94_11_battery
+            name: Battery
+        style: |
+          ha-card {
+            --st-font-size-xl: 18px;
+            --st-font-size-m: 18px;
+            --st-font-size-title: 18px;
+            --st-font-size-sensors: 18px;
+            --st-spacing: 2px;
+          }
+          ...
+        type: 'custom:simple-thermostat'
+      - entity: climate.floorc82b96baae94_12_climate
+        name: Mathias Værelse
+        sensors:
+          - entity: sensor.floorc82b96baae94_12_battery
+            name: Battery
+        style: |
+          ha-card {
+            --st-font-size-xl: 18px;
+            --st-font-size-m: 18px;
+            --st-font-size-title: 18px;
+            --st-font-size-sensors: 18px;
+            --st-spacing: 2px;
+          }
+          ...
+        type: 'custom:simple-thermostat'
+      - entity: climate.floorc82b96baae94_13_climate
+        name: Bryggers
+        sensors:
+          - entity: sensor.floorc82b96baae94_13_battery
+            name: Battery
+        style: |
+          ha-card {
+            --st-font-size-xl: 18px;
+            --st-font-size-m: 18px;
+            --st-font-size-title: 18px;
+            --st-font-size-sensors: 18px;
+            --st-spacing: 2px;
+          }
+          ...
+        type: 'custom:simple-thermostat'
+      - entity: climate.floorc82b96baae94_14_climate
+        name: Garage
+        sensors:
+          - entity: sensor.floorc82b96baae94_14_battery
+            name: Battery
+        style: |
+          ha-card {
+            --st-font-size-xl: 18px;
+            --st-font-size-m: 18px;
+            --st-font-size-title: 18px;
+            --st-font-size-sensors: 18px;
+            --st-spacing: 2px;
+          }
+          ...
+        type: 'custom:simple-thermostat'
+    icon: 'mdi:radiator'
+    path: wavin
+    theme: ios-dark-mode-light-blue
+    title: wavin
+  - badges: []
+    cards:
+      - entities:
+          - entity: sensor.kostal_home_power
+          - entity: sensor.kostal_home_power_from_battery
+          - entity: sensor.kostal_home_power_from_grid
+          - entity: sensor.kostal_home_power_from_pv
+        hours_to_show: 24
+        refresh_interval: 0
+        title: Kostal Forbrug
+        type: history-graph
+      - entities:
+          - entity: sensor.kostal_power_grid
+        hours_to_show: 24
+        refresh_interval: 0
+        title: Kostal Net Power
+        type: history-graph
+      - entity: sensor.kostal_battery
+        max: 100
+        min: 0
+        severity:
+          green: 70
+          red: 5
+          yellow: 30
+        theme: default
+        type: gauge
+      - entity: sensor.kostal_pv_power
+        max: 6500
+        min: 0
+        name: Kostal solcelle strøm
+        severity:
+          green: 4000
+          red: 500
+          yellow: 1500
+        theme: Backend-selected
+        type: gauge
+      - entities:
+          - entity: sensor.kostal_pv1_power
+          - entity: sensor.kostal_pv2_power
+          - entity: sensor.kostal_dc_power
+          - entity: sensor.kostal_pv_power
+        hours_to_show: 24
+        refresh_interval: 0
+        title: Kostal Power
+        type: history-graph
+      - entities:
+          - entity: sensor.kostal_battery_cycles
+          - entity: sensor.kostal_co2_saving_day
+          - entity: sensor.kostal_co2_saving_month
+          - entity: sensor.kostal_co2_saving_year
+          - entity: sensor.kostal_co2_saving_total
+        type: entities
+      - entities:
+          - entity: sensor.kostal_autarky_day
+          - entity: sensor.kostal_autarky_month
+          - entity: sensor.kostal_autarky_year
+          - entity: sensor.kostal_autarky_year
+        type: entities
+      - entities:
+          - entity: sensor.kostal_l1_power
+          - entity: sensor.kostal_l2_power
+          - entity: sensor.kostal_l3_power
+        hours_to_show: 24
+        refresh_interval: 0
+        title: 'Kostal Fase Power '
+        type: history-graph
+    icon: 'mdi:solar-power'
+    path: kostal
+    theme: ios-dark-mode-light-blue
+    title: Kostal
+  - badges: []
+    cards:
+      - entity: sensor.tradfri_remote_control
+        type: sensor
+      - entities:
+          - entity: light.tradfri_bulb_5
+            name: køkken
+            type: 'custom:slider-entity-row'
+          - entity: light.tradfri_bulb_6
+            name: køkken
+            type: 'custom:slider-entity-row'
+          - entity: light.tradfri_bulb_7
+            name: køkken
+            type: 'custom:slider-entity-row'
+          - entity: light.tradfri_bulb_8
+            name: køkken
+            type: 'custom:slider-entity-row'
+          - entity: light.tradfri_bulb_9
+            name: køkken
+            type: 'custom:slider-entity-row'
+          - entity: light.tradfri_bulb_10
+            name: udendørs
+            type: 'custom:slider-entity-row'
+          - entity: light.tradfri_bulb_11
+            name: udendørs
+            type: 'custom:slider-entity-row'
+          - entity: light.tradfri_bulb_12
+            name: udendørs
+            type: 'custom:slider-entity-row'
+          - entity: light.tradfri_bulb_13
+            name: udendørs
+            type: 'custom:slider-entity-row'
+          - entity: light.tradfri_bulb
+            name: stue
+            type: 'custom:slider-entity-row'
+          - entity: light.tradfri_bulb_2
+            name: stue
+            type: 'custom:slider-entity-row'
+          - entity: light.tradfri_bulb_3
+            name: stue
+            type: 'custom:slider-entity-row'
+          - entity: light.tradfri_bulb_4
+            name: stue
+            type: 'custom:slider-entity-row'
+        title: Lys
+        type: entities
+      - entity: sensor.tradfri_motion_sensor
+        type: sensor
+      - entity: sensor.tradfri_motion_sensor_2
+        type: sensor
+      - cards:
+          - entity: switch.mcp23017_pin_10
+            hold_action:
+              action: more-info
+            show_icon: true
+            show_name: true
+            show_state: true
+            tap_action:
+              action: toggle
+            type: button
+        type: vertical-stack
+      - entities:
+          - entity: zwave.popp_co_unknown_type_0004_id_0008
+          - entity: sensor.popp_co_unknown_type_0004_id_0008_alarm_level
+          - entity: sensor.popp_co_unknown_type_0004_id_0008_alarm_type
+          - entity: sensor.popp_co_unknown_type_0004_id_0008_flood
+          - entity: binary_sensor.popp_co_unknown_type_0004_id_0008_sensor
+          - entity: sensor.popp_co_unknown_type_0004_id_0008_sourcenodeid
+          - entity: sensor.popp_co_unknown_type_0004_id_0008_battery_level
+        type: entities
+      - entities:
+          - entity: zwave.aeon_labs_zw100_multisensor_6_2
+          - entity: sensor.aeon_labs_zw100_multisensor_6_alarm_level
+          - entity: sensor.aeon_labs_zw100_multisensor_6_alarm_type
+          - entity: sensor.aeon_labs_zw100_multisensor_6_burglar
+          - entity: sensor.aeon_labs_zw100_multisensor_6_luminance
+          - entity: sensor.aeon_labs_zw100_multisensor_6_relative_humidity
+          - entity: binary_sensor.aeon_labs_zw100_multisensor_6_sensor
+          - entity: sensor.aeon_labs_zw100_multisensor_6_sourcenodeid
+          - entity: sensor.aeon_labs_zw100_multisensor_6_temperature
+          - entity: sensor.aeon_labs_zw100_multisensor_6_ultraviolet
+          - entity: sensor.aeon_labs_zw100_multisensor_6_battery_level
+        type: entities
+    icon: 'mdi:lightbulb-on'
+    panel: false
+    path: ikea
+    theme: ios-dark-mode-light-blue
+    title: ikea
+    type: js
+    url: /local/fan-control-entity-row.js
+  - badges: []
+    cards:
+      - entities:
+          - entity: sensor.sonnen_stromeinspeisung
+        hours_to_show: 24
+        refresh_interval: 0
+        title: Sonnen Feedin
+        type: history-graph
+      - entities:
+          - entity: sensor.sonnen_stromerzeugung
+        hours_to_show: 24
+        refresh_interval: 0
+        title: Sonnen PV
+        type: history-graph
+      - entity: sensor.sonnen_stromspeicher
+        max: 100
+        min: 0
+        name: Sonnen Battery
+        severity:
+          green: 70
+          red: 5
+          yellow: 10
+        theme: default
+        type: gauge
+      - entity: sensor.sonnen_stromerzeugung
+        max: 5500
+        min: 0
+        name: 'Solceller '
+        severity:
+          green: 2000
+          red: 500
+          yellow: 1500
+        theme: default
+        type: gauge
+      - entities:
+          - entity: sensor.sonnen_stromverbrauch
+        hours_to_show: 24
+        refresh_interval: 0
+        title: Sonnen Consumption
+        type: history-graph
+    icon: 'mdi:solar-power'
+    path: sonnen
+    theme: ios-dark-mode-light-blue
+    title: Sonnen
+  - badges: []
+    cards:
+      - entities:
+          - entity: fan.nilan
+            name: Ventilation hastighed
+            type: 'custom:fan-control-entity-row'
+          - entity: fan.nilancool
+            name: Ventilation hastighed køl
+            type: 'custom:fan-control-entity-row'
+          - entity: fan.nilan_user_vent
+            name: Ventilation hastighed bruger
+            type: 'custom:fan-control-entity-row'
+          - entity: switch.nilan_bruger_valg
+            icon: 'mdi:human'
+          - entity: input_select.weekprogram_mode
+            icon: 'mdi:human'
+            name: ugeprogram
+          - entity: input_select.nilan_user_func_mode
+            icon: 'mdi:human'
+            name: Bruger func
+          - entity: input_select.nilan_user_time_mode
+            icon: 'mdi:human'
+          - entity: input_select.nilan_cool_mode
+            icon: 'mdi:human'
+            name: køl diff
+          - entity: binary_sensor.nilan_bypass
+            icon: 'mdi:door'
+          - entity: binary_sensor.nilan_modbus
+          - entity: binary_sensor.nilan_filterstatus
+          - entity: sensor.nilan_comp
+            icon: 'mdi:piston'
+          - entity: sensor.nilan_runact
+          - entity: sensor.nilan_indsugnings_temp
+          - entity: sensor.nilan_krydsveklser_effektivitet
+          - entity: sensor.nilan_afkast_temp
+          - entity: sensor.nilan_inlet_after_heater_temp
+          - entity: sensor.nilan_controllerboard_temp
+          - entity: sensor.nilan_rum_temp
+          - entity: sensor.nilan_condenser_temp
+          - entity: sensor.nilan_evaporator_temp
+          - entity: sensor.nilan_hotwater_top_temp
+          - entity: sensor.nilan_hotwater_bottom_temp
+          - entity: sensor.nilan_luftfugtighed
+        type: entities
+      - entity: sensor.nilan_udblaes_procent
+        max: 100
+        min: 0
+        name: Udsugning
+        severity:
+          green: 0
+          red: 75
+          yellow: 50
+        theme: clear-dark
+        type: gauge
+      - entity: sensor.nilan_indblaes_procent
+        max: 100
+        min: 0
+        name: Inblæsning
+        severity:
+          green: 0
+          red: 70
+          yellow: 50
+        theme: clear-dark
+        type: gauge
+      - entity: climate.nilan_compact
+        name: Nilan Compact S
+        type: thermostat
+    icon: 'mdi:fan'
+    path: nilan-genvex
+    theme: ios-dark-mode-light-blue-alternative
+    title: Nilan Genvex

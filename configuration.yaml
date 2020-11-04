@@ -1,0 +1,424 @@
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+frontend:
+  themes: !include_dir_merge_named themes
+  
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+
+  
+mqtt:
+  discovery: true
+  broker: Your ip 
+  port: 1883
+  keepalive: 36000
+  username: Brugernavn
+  password: Password
+
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+
+#################################
+###  Nilan Genvex             ###
+#################################  
+
+homeassistant:
+
+climate:
+ - platform: mqtt
+   name: "Nilan Compact"
+   qos: 2
+   payload_on: 1
+   payload_off: 0
+   power_command_topic: "ventilation/runset"
+   modes:
+     - auto
+     - heat
+     - cool
+     - 'off'
+   mode_state_topic: "ventilation/control/ModeSet" 
+   mode_state_template: >-
+     {% set modes = { '0':'off', '1':'heat',  '2':'cool', '3':'auto'} %}
+     {{ modes[value] if value in modes.keys() else 'off' }}
+   mode_command_topic: "convert/modeset"
+   current_temperature_topic: "ventilation/temp/T7_Inlet"
+   min_temp: 16
+   max_temp: 28
+   temp_step: 1.0
+   temperature_state_topic: "ventilation/control/TempSet"
+   temperature_state_template: >-
+    {{ value | float | multiply(0.01) | round(1) }}
+   temperature_command_topic: "convert/tempset"
+   retain: true
+
+ 
+
+#################################
+###  Nilan Temp Sensorer      ###
+#################################    
+
+sensor:
+   - platform: mqtt
+    name: "Nilan_Time_hour"
+    state_topic: "ventilation/time/Hour"
+
+  - platform: mqtt
+    name: "Nilan_Time_Minute"
+    state_topic: "ventilation/time/Minute"
+
+  - platform: mqtt
+    name: "Nilan_Time_Second"
+    state_topic: "ventilation/time/Second" 
+    
+
+  - platform: template
+    sensors:
+      nilan_runact:
+        friendly_name: "Run State"
+        entity_id: sensor.nilan_run_state
+        value_template: >-
+          {% set mapper =  {
+              '0' : 'Off',
+              '1' : 'Shift',
+              '2' : 'Stop',
+              '3' : 'Start',
+              '4' : 'Standby',
+              '5' : 'Ventilation stop',
+              '6' : 'Ventilation',
+              '7' : 'Heating',
+              '8' : 'Cooling',
+              '9' : 'Hot water',
+              '10' : 'Legionella',
+              '11' : 'Cooling + hot water',
+              '12' : 'Central heating',
+              '13' : 'Defrost',
+              '14' : 'Frost secure',
+              '15' : 'Service',
+              '16' : 'Alarm',
+              '17' : 'Heating + hot water' } %}
+          {% set state =  states.sensor.nilan_run_state.state %}
+          {{ mapper[state] if state in mapper else 'Unknown' }}
+
+  - platform: template
+    sensors:
+      nilan_comp:
+        friendly_name: "Compressor State"
+        entity_id: sensor.nilan_compressor
+        value_template: >-
+          {% set mapper =  {
+              '0' : 'Off',
+              '1' : 'On' } %}
+          {% set state =  states.sensor.nilan_compressor.state %}
+          {{ mapper[state] if state in mapper else 'Unknown' }}
+
+
+  - platform: mqtt
+    name: "Nilan Run state"
+    state_topic: "ventilation/actstate/State"
+
+  - platform: mqtt
+    name: "Nilan Compressor"
+    state_topic: "ventilation/output/Compressor"
+    
+  - platform: mqtt
+    name: "Nilan controllerboard temp"
+    state_topic: "ventilation/temp/T0_Controller"
+    unit_of_measurement: "°C"
+    device_class: temperature
+
+  - platform: mqtt
+    name: "Nilan indsugnings temp"
+    state_topic: "ventilation/temp/T1_Intake"
+    unit_of_measurement: "°C"
+    device_class: temperature
+
+  - platform: mqtt
+    name: "Nilan Inlet After Heater temp"
+    state_topic: "ventilation/temp/T7_Inlet"
+    unit_of_measurement: "°C"
+    device_class: temperature
+  
+  - platform: mqtt
+    name: "Nilan Rum Temp"
+    state_topic: "ventilation/temp/T10_Extern"
+    unit_of_measurement: "°C"
+    device_class: temperature  
+
+  - platform: mqtt
+    name: "Nilan Outdoor Temp"
+    state_topic: "ventilation/temp/T8_Outdoor"
+    unit_of_measurement: "°C"
+    device_class: temperature
+
+  - platform: mqtt
+    name: "Nilan Condenser Temp"
+    state_topic: "ventilation/temp/T5_Cond"
+    unit_of_measurement: "°C"
+    device_class: temperature  
+
+  - platform: mqtt
+    name: "Nilan Evaporator Temp"
+    state_topic: "ventilation/temp/T6_Evap"
+    unit_of_measurement: "°C"
+    device_class: temperature 
+ 
+  - platform: mqtt
+    name: "Nilan Hotwater top Temp"
+    state_topic: "ventilation/temp/T11_Top"
+    unit_of_measurement: "°C"
+    device_class: temperature 
+
+  - platform: mqtt
+    name: "Nilan Hotwater Bottom Temp"
+    state_topic: "ventilation/temp/T12_Bottom"
+    unit_of_measurement: "°C"
+    device_class: temperature  
+
+        
+  - platform: mqtt
+    name: "Nilan Afkast Temp"
+    state_topic: "ventilation/temp/T4_Outlet"
+    unit_of_measurement: "°C"
+    device_class: temperature 
+ 
+ 
+
+ 
+
+
+#################################
+###  Nilan Fugt Sensor        ###
+#################################        
+
+  - platform: mqtt
+    name: "Nilan Luftfugtighed"
+    state_topic: "ventilation/moist/RH"
+    unit_of_measurement: "%"
+    device_class: humidity
+
+ 
+
+
+#################################
+###  Nilan Luftmængde Sensor  ###
+#################################      
+
+  - platform: mqtt
+    name: "Nilan Indblæs Procent"
+    state_topic: "ventilation/speed/InletSpeed"
+    value_template: >-
+     {{ value | float | multiply(0.01) | round(0) }}
+    unit_of_measurement: "%"
+
+  - platform: mqtt
+    name: "Nilan Udblæs Procent"
+    state_topic: "ventilation/speed/ExhaustSpeed"
+    value_template: >-
+     {{ value | float | multiply(0.01) | round(0) }}
+    unit_of_measurement: "%" 
+    
+#################################
+###Nilan Krydsveklser Effekt  ###
+#################################      
+
+  - platform: mqtt
+    name: "Nilan Krydsveklser Effektivitet"
+    state_topic: "ventilation/inputairtemp/EffPct"
+    value_template: >-
+     {{ value | float | multiply(0.01) | round(0) }}
+    unit_of_measurement: "%"     
+
+#################################
+### Nilan Bypass-Spjæld Sensor###
+#################################       
+
+binary_sensor:
+
+  - platform: mqtt
+    name: "Nilan Bypass"
+    state_topic: "ventilation/output/BypassClose"
+    payload_on: "0"
+    payload_off: "1"
+    device_class: opening
+
+ 
+
+    
+#################################
+### Nilan Ping Sensor         ###
+#################################  
+  
+  - platform: ping
+    name: Nilan Controller
+    host: 192.168.1.85 // The Ip adress of your ESP board 
+    count: 3
+    scan_interval: 30  
+
+#################################
+### Nilan Filterstatus Sensor ###
+#################################        
+
+  - platform: mqtt
+    name: "Nilan filterstatus"
+    state_topic: "ventilation/info/AirFilter" #Airfilter alarm
+    device_class: problem
+    value_template: >-
+            {% if value == "0" %}
+            {{"Filter ok"}}
+            {% else %}
+            {{"Filter skal skiftes"}}
+            {% endif %}
+
+  
+#################################
+### Modbus error sensor       ###
+#################################        
+
+  - platform: mqtt
+    name: "Nilan modbus"
+    state_topic: "ventilation/error/modbus/" #Modbus alarm
+    device_class: connectivity
+    payload_on: "0"
+    payload_off: "1"
+  
+  
+
+#################################
+###  Nilan Blæser Kontrol     ###
+#################################    
+
+fan:
+  - platform: mqtt
+    name: "Nilan"
+    state_topic: "ventilation/control/RunSet"
+    command_topic: "ventilation/runset"
+    speed_state_topic: "ventilation/control/VentSet"
+    speed_command_topic: "ventilation/ventset"
+    qos: 2
+    retain: true
+    payload_on: "1"
+    payload_off: "0"
+    payload_low_speed: "1"
+    payload_medium_speed: "2"
+    payload_high_speed: "3"
+    speeds:
+      - "off"
+      - low
+      - medium
+      - high
+
+
+  - platform: mqtt
+    name: "NilanCool"
+    state_topic: "ventilation/control/RunSet"
+    command_topic: "ventilation/runset"
+    speed_state_topic: "ventilation/airflow/CoolVent"
+    speed_command_topic: "ventilation/coolvent"
+    qos: 2
+    retain: true
+    payload_on: "1"
+    payload_off: "0"
+    payload_low_speed: "1"
+    payload_medium_speed: "2"
+    payload_high_speed: "3"
+    speeds:
+      - "off"
+      - low
+      - medium
+      - high
+ 
+  - platform: mqtt
+    name: "Nilan user vent"
+    state_topic: "ventilation/control/RunSet"
+    command_topic: "ventilation/runset"
+    speed_state_topic: "ventilation/user/UserVentSet"
+    speed_command_topic: "ventilation/userventset"
+    qos: 2
+    retain: true
+    payload_on: "1"
+    payload_off: "0"
+    payload_low_speed: "1"
+    payload_medium_speed: "2"
+    payload_high_speed: "3"
+    speeds:
+      - "off"
+      - low
+      - medium
+      - high
+
+
+input_select:
+  weekprogram_mode:
+    name: Nilan Week Program
+    options:
+      - "Off"
+      - "Program 1"
+      - "Program 2"
+      - "Program 3"
+    initial: "Off"  
+    icon: mdi:target 
+  nilan_cool_mode:
+    name: Nilan Cool
+    options:
+      - "off"
+      - "1"
+      - "2"
+      - "3"
+      - "4"
+      - "5"
+      - "6"
+      - "7"
+      - "8"
+    icon: mdi:target
+  nilan_user_time_mode:
+    name: Nilan user time
+    options:
+      - "000"
+      - "030"
+      - "100"
+      - "130"
+      - "200"
+      - "230"
+      - "300"
+      - "330"
+      - "400"
+      - "430"
+      - "500"
+      - "530"
+      - "600"
+      - "630"
+      - "700"
+      - "730"
+      - "800"
+    icon: mdi:target 
+  nilan_user_func_mode:
+    name: Nilan user func
+    options:
+      - "none"
+      - "extend"
+      - "inlet"
+      - "exhaust"
+      - "external_heater_offset"
+      - "ventilate"
+    icon: mdi:target 
+
+
+
+ 
+switch:
+  - platform: mqtt
+    name: Nilan Bruger valg
+    state_topic: "ventilation/userset"
+    command_topic: "ventilation/userset"
+    retain: true
+    payload_on: "1"
+    payload_off: "0"
